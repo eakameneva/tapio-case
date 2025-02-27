@@ -8,9 +8,17 @@ export const postsApi = createApi({
     baseUrl: `https://jsonplaceholder.typicode.com`,
   }),
   endpoints: (build) => ({
-    getAllPosts: build.query<Post[], void>({
-      query: () => ({
+    getAllPosts: build.query<
+      { posts: Post[]; total: number },
+      { page: number }
+    >({
+      query: ({ page }) => ({
         url: "/posts",
+        params: { _limit: 6, _page: page },
+      }),
+      transformResponse: (response: Post[], meta) => ({
+        posts: response,
+        total: Number(meta?.response?.headers.get("X-Total-Count")) || 100,
       }),
       providesTags: ["Post"],
     }),
