@@ -5,44 +5,77 @@ const BASE_URL = "https://jsonplaceholder.typicode.com/posts";
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
-  async (page: number) => {
-    const response = await fetch(`${BASE_URL}?_limit=6&_page=${page}`);
-    const data = await response.json();
-    return {
-      posts: data,
-      total: Number(response.headers.get("X-Total-Count")) || 100,
-    };
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(BASE_URL);
+      if (!response.ok) {
+        throw new Error("Error fetching posts");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+    }
   }
 );
 
 export const addPost = createAsyncThunk(
   "posts/addPost",
-  async (newPost: Partial<Post>) => {
-    const response = await fetch(BASE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newPost),
-    });
-    return await response.json();
+  async (newPost: Partial<Post>, { rejectWithValue }) => {
+    try {
+      const response = await fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPost),
+      });
+      if (!response.ok) {
+        throw new Error("Error creating post");
+      }
+      return await response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+    }
   }
 );
 
 export const updatePost = createAsyncThunk(
   "posts/updatePost",
-  async (post: Post) => {
-    const response = await fetch(`${BASE_URL}/${post.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(post),
-    });
-    return await response.json();
+  async (post: Post, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/${post.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(post),
+      });
+      if (!response.ok) {
+        throw new Error("Error editing post");
+      }
+      return await response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+    }
   }
 );
 
 export const deletePost = createAsyncThunk(
   "posts/deletePost",
-  async (id: number) => {
-    await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-    return id;
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+      if (!response.ok) {
+        throw new Error("Error deleting post");
+      }
+      return id;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+    }
   }
 );
