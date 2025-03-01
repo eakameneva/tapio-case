@@ -20,7 +20,7 @@ function PostsList() {
   const { posts, loading, error } = useSelector(
     (state: RootState) => state.posts
   );
-  const totalPages = Math.floor((posts.length - 1) / POSTS_PER_PAGE);
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
 
   useEffect(() => {
     if (!posts.length) {
@@ -43,7 +43,7 @@ function PostsList() {
     const currentPosts =
       page === 1
         ? posts.slice(0, POSTS_PER_PAGE - 1)
-        : posts.slice(pageOffset, pageOffset + POSTS_PER_PAGE);
+        : posts.slice(pageOffset - 1, pageOffset - 1 + POSTS_PER_PAGE);
     setFilteredPosts(currentPosts);
   }, [page, posts]);
 
