@@ -7,7 +7,7 @@ import { Modal } from "@mui/material";
 import { Post } from "../store/postDTO";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { fetchPosts } from "../store/postThunks";
+import { fetchAuthors, fetchPosts } from "../store/postThunks";
 import NewPost from "./NewPost";
 
 const POSTS_PER_PAGE = 6;
@@ -47,6 +47,12 @@ function PostsList() {
     setFilteredPosts(currentPosts);
   }, [page, posts]);
 
+  useEffect(() => {
+    dispatch(fetchAuthors()).then(() => {
+      dispatch(fetchPosts());
+    });
+  }, [dispatch]);
+
   return (
     <div className="max-w-6xl mx-auto flex-col justify-items-center">
       {loading && <CircularProgress className="m-auto" />}
@@ -62,9 +68,14 @@ function PostsList() {
       </div>
       <Modal open={!!selectedPost} onClose={() => setSelectedPost(null)}>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-          <h2 className="text-2xl text-lightTurquoise font-semibold mb-4">
+          <h2 className="text-2xl text-lightTurquoise font-semibold mb-1">
             {selectedPost?.title}
           </h2>
+          <h3 className="text-darkText font-semibold mb-4">
+            {selectedPost?.authorName
+              ? `Author: ${selectedPost?.authorName}`
+              : "Author unknown"}
+          </h3>
           <p className="text-darkText">{selectedPost?.body}</p>
         </div>
       </Modal>

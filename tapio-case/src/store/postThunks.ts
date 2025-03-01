@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Post } from "./postDTO";
+import { IUser, Post } from "./postDTO";
 import makeRequest from "../api";
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await makeRequest("/");
+      const response = await makeRequest("/posts");
       if (!response.ok) {
         throw new Error("Error fetching posts");
       }
@@ -24,7 +24,7 @@ export const addPost = createAsyncThunk(
   "posts/addPost",
   async (newPost: Partial<Post>, { rejectWithValue }) => {
     try {
-      const response = await makeRequest("/", "POST", newPost);
+      const response = await makeRequest("/posts", "POST", newPost);
 
       if (!response.ok) {
         throw new Error("Error creating post");
@@ -42,7 +42,7 @@ export const updatePost = createAsyncThunk(
   "posts/updatePost",
   async (post: Post, { rejectWithValue }) => {
     try {
-      const response = await makeRequest(`/${post.id}`, "PUT", post);
+      const response = await makeRequest(`/posts/${post.id}`, "PUT", post);
 
       if (!response.ok) {
         throw new Error("Error editing post");
@@ -60,11 +60,33 @@ export const deletePost = createAsyncThunk(
   "posts/deletePost",
   async (id: number, { rejectWithValue }) => {
     try {
-      const response = await makeRequest(`/${id}`, "DELETE");
+      const response = await makeRequest(`/posts/${id}`, "DELETE");
       if (!response.ok) {
         throw new Error("Error deleting post");
       }
       return id;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const fetchAuthors = createAsyncThunk(
+  "posts/fetchAuthors",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await makeRequest("/users");
+      if (!response.ok) {
+        throw new Error("Error fetching authors");
+      }
+      const users = await response.json();
+
+      return users.reduce((acc: Record<number, string>, user: IUser) => {
+        acc[user.id] = user.name;
+        return acc;
+      }, {});
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
