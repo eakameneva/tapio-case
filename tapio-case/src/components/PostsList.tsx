@@ -8,6 +8,7 @@ import { Post } from "../store/postDTO";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchPosts } from "../store/postThunks";
+import NewPost from "./NewPost";
 
 const POSTS_PER_PAGE = 6;
 
@@ -38,8 +39,11 @@ function PostsList() {
   }, [totalPages, page]);
 
   useEffect(() => {
-    const pageOffset = page * POSTS_PER_PAGE;
-    const currentPosts = posts.slice(pageOffset, pageOffset + POSTS_PER_PAGE);
+    const pageOffset = (page - 1) * POSTS_PER_PAGE;
+    const currentPosts =
+      page === 1
+        ? posts.slice(0, POSTS_PER_PAGE - 1)
+        : posts.slice(pageOffset, pageOffset + POSTS_PER_PAGE);
     setFilteredPosts(currentPosts);
   }, [page, posts]);
 
@@ -47,6 +51,7 @@ function PostsList() {
     <div className="max-w-6xl mx-auto flex-col justify-items-center">
       {loading && <CircularProgress className="m-auto" />}
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {page === 1 && <NewPost />}
         {filteredPosts.map((post) => (
           <PostItem
             key={post.id}

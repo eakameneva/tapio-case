@@ -20,7 +20,6 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
     setError,
     clearErrors,
     getValues,
@@ -29,13 +28,6 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
     reValidateMode: "onChange",
     defaultValues: initialData,
   });
-
-  //   useEffect(() => {
-  //     reset({
-  //       title: post?.title || "",
-  //       body: post?.body || "",
-  //     });
-  //   }, [post, reset]);
 
   const trimFormData = (data: IPostFormValues) => {
     const trimmedData = {
@@ -74,13 +66,14 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmitForm)}>
-      <h2 className="text-2xl font-semibold text-lightTurquoise mb-2">
+      <h2 className="text-2xl font-semibold text-lightTurquoise mb-4 text-center">
         {formTitle}
       </h2>
       <TextField
         required
         id="outlined-required"
         label="Title"
+        fullWidth={true}
         {...register("title", {
           required: "Required field",
           maxLength: {
@@ -89,7 +82,7 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
           },
         })}
       />
-      <div>
+      <div className="text-red-600">
         {errors?.title && <span>{errors?.title?.message || "Error"}</span>}
       </div>
       <br />
@@ -100,15 +93,17 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
         multiline
         minRows={3}
         maxRows={10}
+        fullWidth={true}
         {...register("body", {
           required: "Required field",
         })}
       />
-      <div>
+      <div className="text-red-600">
         {errors?.body && <span>{errors?.body?.message || "Error"}</span>}
       </div>
       <br />
       <Button
+        onClick={handleSubmit(onSubmitForm)}
         variant="outlined"
         endIcon={<SendIcon />}
         sx={{
