@@ -1,12 +1,12 @@
 import { Card, CardContent, Modal, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import PostForm from "./PostForm";
+import PostForm from "../PostForm";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
+import { AppDispatch } from "../../store/store";
 import { toast } from "react-toastify";
-import { addPost } from "../store/postThunks";
-import { Post } from "../store/postDTO";
+import { addPost } from "../../store/postThunks";
+import { Post } from "../../store/postDTO";
 
 function NewPost() {
   const [createMode, setCreateMode] = useState<boolean>(false);

@@ -2,15 +2,15 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Post } from "../store/postDTO.ts";
+import { Post } from "../../store/postDTO.ts";
 import { Button, Modal, Popover, Stack, Typography } from "@mui/material";
-import { truncateText } from "../helpers";
+import { truncateText } from "../../helpers/index.ts";
 import { MouseEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store.ts";
-import { deletePost, updatePost } from "../store/postThunks";
-import PostForm from "./PostForm.tsx";
+import { AppDispatch } from "../../store/store.ts";
+import { deletePost, updatePost } from "../../store/postThunks.ts";
+import PostForm from "../PostForm/PostForm.tsx";
 
 interface IPostItemProps {
   post: Post;
@@ -63,10 +63,10 @@ function PostItem({ post, onClick }: IPostItemProps) {
         </div>
       </Modal>
       <Card
-        className="bg-gray-900 shadow-xl rounded-2xl overflow-hidden flex-col gap-2 cursor-pointer"
+        className="bg-gray-900 shadow-xl rounded-2xl flex flex-col gap-2 cursor-pointer w-full max-h-full min-h-52"
         onClick={onClick}
       >
-        <CardContent className="p-6">
+        <CardContent className="p-6 flex flex-col flex-grow justify-between items-center">
           <h2 className="text-2xl font-semibold text-lightTurquoise mb-2">
             {post.title}
           </h2>

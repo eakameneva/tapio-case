@@ -2,13 +2,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Pagination from "@mui/material/Pagination";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import PostItem from "./PostItem";
+import PostItem from "../PostItem";
 import { Modal } from "@mui/material";
-import { Post } from "../store/postDTO";
+import { Post } from "../../store/postDTO";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store/store";
-import { fetchAuthors, fetchPosts } from "../store/postThunks";
-import NewPost from "./NewPost";
+import { AppDispatch, RootState } from "../../store/store";
+import { fetchAuthors, fetchPosts } from "../../store/postThunks";
+import NewPost from "../NewPost";
 
 const POSTS_PER_PAGE = 6;
 
