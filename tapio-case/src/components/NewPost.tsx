@@ -14,8 +14,10 @@ function NewPost() {
 
   const handleCreateSubmit = async (data: Partial<Post>) => {
     try {
-      const newPost = { id: Date.now(), ...data };
+      const tempId = Date.now();
+      const newPost = { ...data, id: tempId };
       await dispatch(addPost(newPost)).unwrap();
+
       toast.success("Post created successfully");
       setCreateMode(false);
     } catch (error) {
