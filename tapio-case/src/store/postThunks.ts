@@ -1,13 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Post } from "./postDTO";
-
-const BASE_URL = "https://jsonplaceholder.typicode.com/posts";
+import makeRequest from "../api";
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(BASE_URL);
+      const response = await makeRequest("/");
       if (!response.ok) {
         throw new Error("Error fetching posts");
       }
@@ -25,11 +24,8 @@ export const addPost = createAsyncThunk(
   "posts/addPost",
   async (newPost: Partial<Post>, { rejectWithValue }) => {
     try {
-      const response = await fetch(BASE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      });
+      const response = await makeRequest("/", "POST", newPost);
+
       if (!response.ok) {
         throw new Error("Error creating post");
       }
@@ -46,11 +42,8 @@ export const updatePost = createAsyncThunk(
   "posts/updatePost",
   async (post: Post, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/${post.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(post),
-      });
+      const response = await makeRequest(`/${post.id}`, "PUT", post);
+
       if (!response.ok) {
         throw new Error("Error editing post");
       }
@@ -67,7 +60,7 @@ export const deletePost = createAsyncThunk(
   "posts/deletePost",
   async (id: number, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+      const response = await makeRequest(`/${id}`, "DELETE");
       if (!response.ok) {
         throw new Error("Error deleting post");
       }

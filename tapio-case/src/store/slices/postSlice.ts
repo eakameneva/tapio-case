@@ -33,13 +33,14 @@ const postsSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(addPost.fulfilled, (state, action) => {
-        state.posts.push(action.payload);
+        state.posts.unshift(action.payload);
       })
       .addCase(updatePost.fulfilled, (state, action) => {
         const index = state.posts.findIndex(
           (post) => post.id === action.payload.id
         );
-        if (index !== -1) state.posts[index] = action.payload;
+        if (index !== -1)
+          state.posts[index] = { ...state.posts[index], ...action.payload };
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.posts = state.posts.filter((post) => post.id !== action.payload);
