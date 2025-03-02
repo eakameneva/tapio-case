@@ -79,12 +79,14 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
         {formTitle}
       </h2>
       <TextField
-        className={`input-field ${errors.username ? "error-input" : ""}`}
         {...register("username", {
           required: "Required field",
-          minLength: {
-            value: 3,
-            message: "Your username needs to be at least 3 characters.",
+          validate: (value) => {
+            const trimmedValue = value.trim();
+            if (trimmedValue.length < 3) {
+              return "Your username needs to be at least 3 characters.";
+            }
+            return true;
           },
           maxLength: {
             value: 20,
@@ -104,12 +106,14 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
       <br />
 
       <TextField
-        className={`input-field ${errors.password ? "error-input" : ""}`}
         {...register("password", {
           required: "Required field",
-          minLength: {
-            value: 6,
-            message: "Your password needs to be at least 6 characters.",
+          validate: (value) => {
+            const trimmedValue = value.trim();
+            if (trimmedValue.length < 6) {
+              return "Your password needs to be at least 6 characters.";
+            }
+            return true;
           },
           maxLength: {
             value: 40,
