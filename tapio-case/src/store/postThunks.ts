@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IUser, Post } from "./postDTO";
+import { IUser, IPost } from "./postDTO";
 import makeRequest from "../api";
 
 export const fetchPosts = createAsyncThunk(
@@ -22,7 +22,7 @@ export const fetchPosts = createAsyncThunk(
 
 export const addPost = createAsyncThunk(
   "posts/addPost",
-  async (newPost: Partial<Post>, { rejectWithValue }) => {
+  async (newPost: Partial<IPost>, { rejectWithValue }) => {
     try {
       const response = await makeRequest("/posts", "POST", newPost);
 
@@ -40,7 +40,10 @@ export const addPost = createAsyncThunk(
 
 export const updatePost = createAsyncThunk(
   "posts/updatePost",
-  async (post: Post, { rejectWithValue }) => {
+  async (post: IPost, { rejectWithValue }) => {
+    if (post.id >= 1000000000000) {
+      return post;
+    }
     try {
       const response = await makeRequest(`/posts/${post.id}`, "PUT", post);
 

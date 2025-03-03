@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Post } from "../postDTO";
+import { IPost } from "../postDTO";
 import {
   fetchPosts,
   addPost,
@@ -9,7 +9,7 @@ import {
 } from "../postThunks";
 
 interface PostsState {
-  posts: Post[];
+  posts: IPost[];
   authors: Record<number, string>;
   loading: boolean;
   error?: string | null;
@@ -34,7 +34,7 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload.map((post: Post) => ({
+        state.posts = action.payload.map((post: IPost) => ({
           ...post,
           authorName: state.authors[post.userId] || "Author unknown",
         }));

@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Post } from "../../store/postDTO.ts";
+import { IPost } from "../../store/postDTO.ts";
 import { Button, Modal, Popover, Stack, Typography } from "@mui/material";
 import { truncateText } from "../../helpers/index.ts";
 import { MouseEvent, useState } from "react";
@@ -13,7 +13,7 @@ import { deletePost, updatePost } from "../../store/postThunks.ts";
 import PostForm from "../PostForm/PostForm.tsx";
 
 interface IPostItemProps {
-  post: Post;
+  post: IPost;
   onClick: () => void;
 }
 
@@ -41,11 +41,11 @@ function PostItem({ post, onClick }: IPostItemProps) {
     event.stopPropagation();
     setEditMode(isEdit);
   };
-  const handleEditSubmit = async (data: Partial<Post>) => {
-    setEditMode(false);
+  const handleEditSubmit = async (data: Partial<IPost>) => {
     try {
       await dispatch(updatePost({ ...post, ...data })).unwrap();
       toast.success("Post edited successfully");
+      setEditMode(false);
     } catch (error) {
       toast.error(String(error));
     }
@@ -63,15 +63,21 @@ function PostItem({ post, onClick }: IPostItemProps) {
         </div>
       </Modal>
       <Card
-        className="bg-gray-900 shadow-xl rounded-2xl flex flex-col gap-2 cursor-pointer w-full max-h-full min-h-52"
-        onClick={onClick}
+        className="!shadow-xl flex flex-col gap-2 w-full !max-h-full min-h-5 cursor-pointer hover:shadow-2xl"
+        onClick={(event) => {
+          if (anchorEl) {
+            event.stopPropagation();
+            return;
+          }
+          onClick();
+        }}
       >
-        <CardContent className="p-6 flex flex-col flex-grow justify-between items-center">
+        <CardContent className="p-6 flex flex-col flex-grow gap-1 justify-between items-center">
           <h2 className="text-2xl font-semibold text-lightTurquoise mb-2">
-            {post.title}
+            {truncateText(post.title, 45)}
           </h2>
-          <p className="text-darkText text-sm">
-            {truncateText(post.body, 100)}
+          <p className="text-darkText text-sm mb-4">
+            {truncateText(post.body, 90)}
           </p>
           <Stack direction="row" spacing={2}>
             <Button
