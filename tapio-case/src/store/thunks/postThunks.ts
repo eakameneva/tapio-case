@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IUser, IPost } from "./postDTO";
-import makeRequest from "../api";
+import { IPost, IAuthor } from "../postDTO";
+import makeRequest from "../../api";
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
@@ -45,7 +45,7 @@ export const updatePost = createAsyncThunk(
       return post;
     }
     try {
-      const response = await makeRequest(`/posts/${post.id}`, "PUT", post);
+      const response = await makeRequest(`/posts/${post.id}`, "PATCH", post);
 
       if (!response.ok) {
         throw new Error("Error editing post");
@@ -86,8 +86,8 @@ export const fetchAuthors = createAsyncThunk(
       }
       const users = await response.json();
 
-      return users.reduce((acc: Record<number, string>, user: IUser) => {
-        acc[user.id] = user.name;
+      return users.reduce((acc: Record<number, string>, user: IAuthor) => {
+        acc[user.id] = user.username;
         return acc;
       }, {});
     } catch (error) {

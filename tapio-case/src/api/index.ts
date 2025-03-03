@@ -1,8 +1,8 @@
-import { Post } from "../store/postDTO";
+import { IPost } from "../store/postDTO";
 
-const BASE_URL = "https://jsonplaceholder.typicode.com/posts";
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
-type RequestBody = Partial<Post> | null;
+const BASE_URL = "https://jsonplaceholder.typicode.com";
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+type RequestBody = Partial<IPost> | null;
 
 const makeRequest = async (
   url: string,

@@ -6,40 +6,54 @@ import AuthForm from "../AuthForm";
 import { login, logout, signup } from "../../store/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
+import { AuthType, IUser } from "../../types";
+import { usePrevious } from "../../hooks";
 
-interface IAuthFormValues {
-  username: string;
-  password: string;
-}
+const TOAST_CLOSE_TIME = 2000;
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const [authMode, setAuthMode] = useState<boolean>(false);
-  const [formType, setFormType] = useState<"Sign in" | "Sign up">("Sign in");
+  const [formType, setFormType] = useState<AuthType>("signIn");
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { error } = useSelector((state: RootState) => state.posts);
+  const isAuthenticatedPrevious = usePrevious(isAuthenticated);
 
-  const handleAuthSubmit = (data: IAuthFormValues) => {
-    console.log(formType, "User Data:", data);
-    if (formType === "Sign up") {
+  const handleAuthSubmit = (data: IUser) => {
+    if (formType === "signUp") {
       dispatch(signup(data));
-    } else if (formType === "Sign in") {
+    } else if (formType === "signIn") {
       dispatch(login(data));
     }
   };
+
   const handleLogOut = () => {
     dispatch(logout());
   };
+
+  const handleAuth = (authType: AuthType) => {
+    setAuthMode(true);
+    setFormType(authType);
+  };
+
   useEffect(() => {
-    if (isAuthenticated) {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isAuthenticated && isAuthenticatedPrevious === false) {
       setAuthMode(false);
       toast.success("Successfully logged in");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isAuthenticatedPrevious]);
+
   return (
     <>
       <Modal open={authMode} onClose={() => setAuthMode(false)}>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-          <AuthForm formTitle={formType} onSubmit={handleAuthSubmit} />
+          <AuthForm authType={formType} onSubmit={handleAuthSubmit} />
         </div>
       </Modal>
       <header className=" bg-darkBlue flex justify-end items-center shadow-md p-4">
@@ -58,11 +72,9 @@ function App() {
           </Button>
         ) : (
           <>
-            {" "}
             <Button
               onClick={() => {
-                setAuthMode(true);
-                setFormType("Sign in");
+                handleAuth("signIn");
               }}
               variant="contained"
               sx={{
@@ -79,8 +91,7 @@ function App() {
             </Button>
             <Button
               onClick={() => {
-                setAuthMode(true);
-                setFormType("Sign up");
+                handleAuth("signUp");
               }}
               variant="outlined"
               sx={{
@@ -95,18 +106,18 @@ function App() {
               }}
             >
               Sign Up
-            </Button>{" "}
+            </Button>
           </>
         )}
       </header>
       <div className="min-h-screen px-6 py-8 bg-gray-100">
-        <h1 className="text-4xl font-extrabold text-darkText text-center mb-8 tracking-wide ">
+        <h1 className="text-4xl font-extrabold text-darkText text-center mb-4 tracking-wide ">
           Recent Posts
         </h1>
         <PostsList />
         <ToastContainer
           position="top-center"
-          autoClose={2000}
+          autoClose={TOAST_CLOSE_TIME}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick

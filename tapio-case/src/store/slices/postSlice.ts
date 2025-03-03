@@ -6,7 +6,7 @@ import {
   updatePost,
   deletePost,
   fetchAuthors,
-} from "../postThunks";
+} from "../thunks/postThunks";
 
 interface PostsState {
   posts: IPost[];

@@ -2,28 +2,31 @@ import { Card, CardContent, Modal, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import PostForm from "../PostForm";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
 import { toast } from "react-toastify";
-import { addPost } from "../../store/postThunks";
-import { Post } from "../../store/postDTO";
+import { addPost } from "../../store/thunks/postThunks";
+import { IPost } from "../../store/postDTO";
 
 function NewPost() {
   const [createMode, setCreateMode] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+  const { currentUser } = useSelector((state: RootState) => state.auth);
 
-  const handleCreateSubmit = async (data: Partial<Post>) => {
-    try {
-      const tempId = Date.now();
-      const newPost = { ...data, id: tempId };
-      await dispatch(addPost(newPost)).unwrap();
-
-      toast.success("Post created successfully");
-      setCreateMode(false);
-    } catch (error) {
-      toast.error(String(error));
+  const handleCreateSubmit = async (data: Partial<IPost>) => {
+    const tempId = Date.now();
+    const newPost = {
+      ...data,
+      id: tempId,
+    };
+    if (currentUser) {
+      newPost.authorName = currentUser;
     }
+    await dispatch(addPost(newPost)).unwrap();
+    toast.success("Post created successfully");
+    setCreateMode(false);
   };
+
   return (
     <>
       <Modal open={createMode} onClose={() => setCreateMode(false)}>
@@ -33,7 +36,7 @@ function NewPost() {
       </Modal>
       <Card
         onClick={() => setCreateMode(true)}
-        className="!bg-transparent !shadow-none border-2 border-dashed border-darkText rounded-2xl gap-2 content-center cursor-pointer !transition-all hover:!bg-gray-200"
+        className="min-h-52 !bg-transparent !shadow-none border-2 border-dashed border-darkText rounded-2xl gap-2 content-center cursor-pointer !transition-all hover:!bg-gray-200"
       >
         <CardContent className="flex flex-col items-center text-darkText">
           <AddIcon className="!text-5xl" />

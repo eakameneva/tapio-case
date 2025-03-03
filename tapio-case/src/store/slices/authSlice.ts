@@ -1,16 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-
-interface User {
-  username: string;
-  password: string;
-}
+import { IUser } from "../../types";
 
 interface AuthState {
   isAuthenticated: boolean;
   currentUser: string | null;
-  users: User[];
+  users: IUser[];
   error: string | null;
 }
 
@@ -25,10 +21,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    signup: (
-      state,
-      action: PayloadAction<{ username: string; password: string }>
-    ) => {
+    signup: (state, action: PayloadAction<IUser>) => {
       const { username, password } = action.payload;
       const userExists = state.users.some((user) => user.username === username);
       if (userExists) {
@@ -41,10 +34,7 @@ const authSlice = createSlice({
       }
     },
 
-    login: (
-      state,
-      action: PayloadAction<{ username: string; password: string }>
-    ) => {
+    login: (state, action: PayloadAction<IUser>) => {
       const { username, password } = action.payload;
       const user = state.users.find(
         (user) => user.username === username && user.password === password

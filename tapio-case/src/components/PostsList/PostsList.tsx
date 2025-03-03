@@ -1,14 +1,14 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import Pagination from "@mui/material/Pagination";
-import { toast } from "react-toastify";
 import { useEffect, useMemo, useState } from "react";
 import PostItem from "../PostItem";
 import { Modal, TextField } from "@mui/material";
 import { IPost } from "../../store/postDTO";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { fetchAuthors, fetchPosts } from "../../store/postThunks";
+import { fetchAuthors, fetchPosts } from "../../store/thunks/postThunks";
 import NewPost from "../NewPost";
+import { getIsStringIncludesNormalized } from "../../helpers";
 
 const POSTS_PER_PAGE = 6;
 const POST_PER_PAGE_WITH_NEW_POST_ITEM = 5;
@@ -20,14 +20,14 @@ function PostsList() {
   const [page, setPage] = useState(1);
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const { posts, authors, loading, error } = useSelector(
+  const { posts, authors, loading } = useSelector(
     (state: RootState) => state.posts
   );
   const filteredSearchedPosts = useMemo(() => {
     return posts.filter(
       (post) =>
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.body.toLowerCase().includes(searchQuery.toLowerCase())
+        getIsStringIncludesNormalized(post.title, searchQuery) ||
+        getIsStringIncludesNormalized(post.body, searchQuery)
     );
   }, [posts, searchQuery]);
 
@@ -51,12 +51,6 @@ function PostsList() {
       dispatch(fetchAuthors());
     }
   }, [dispatch, authors]);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
 
   useEffect(() => {
     setPage(page > totalPages ? totalPages : page);

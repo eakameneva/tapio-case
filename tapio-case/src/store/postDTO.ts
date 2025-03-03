@@ -1,9 +1,9 @@
-export interface IUser {
+export interface IAuthor {
   id: number;
-  name: string;
+  username: string;
 }
 
-export interface Post {
+export interface IPost {
   id: number;
   userId: number;
   title: string;

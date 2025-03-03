@@ -9,8 +9,11 @@ import { MouseEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
-import { deletePost, updatePost } from "../../store/postThunks.ts";
+import { deletePost, updatePost } from "../../store/thunks/postThunks.ts";
 import PostForm from "../PostForm/PostForm.tsx";
+
+const MAX_TITLE_LENGTH = 45;
+const MAX_TEXT_LENGTH = 90;
 
 interface IPostItemProps {
   post: IPost;
@@ -68,10 +71,10 @@ function PostItem({ post, onClick }: IPostItemProps) {
         <CardContent className="p-6 flex flex-col flex-grow gap-1 justify-between items-stretch">
           <div>
             <h2 className="text-2xl font-semibold text-lightTurquoise mb-2">
-              {truncateText(post.title, 45)}
+              {truncateText(post.title, MAX_TITLE_LENGTH)}
             </h2>
             <p className="text-darkText text-sm mb-4">
-              {truncateText(post.body, 90)}
+              {truncateText(post.body, MAX_TEXT_LENGTH)}
             </p>
           </div>
           {isAuthenticated && (

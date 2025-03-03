@@ -4,23 +4,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { useEffect } from "react";
 import { clearError } from "../../store/slices/authSlice";
+import { AuthType, IUser } from "../../types";
 
-interface IAuthFormValues {
-  username: string;
-  password: string;
-}
+const getFormTitle = (authType: AuthType) => {
+  switch (authType) {
+    case "signIn":
+      return "Sign In";
+
+    case "signUp":
+      return "Sign Up";
+  }
+};
+
+const MIN_USERNAME_LENGTH = 3;
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_USERNAME_LENGTH = 20;
+const MAX_PASSWORD_LENGTH = 40;
 
 interface IAuthFormProps {
-  formTitle: string;
-  onSubmit: (data: IAuthFormValues) => void;
+  authType: AuthType;
+  onSubmit: (data: IUser) => void;
 }
 
-function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
+function AuthForm({ authType, onSubmit }: IAuthFormProps) {
   const dispatch = useDispatch();
   const authError = useSelector((state: RootState) => state.auth.error);
-  useEffect(() => {
-    dispatch(clearError());
-  }, [dispatch]);
+  const formTitle = getFormTitle(authType);
 
   const {
     register,
@@ -29,12 +38,16 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
     setError,
     clearErrors,
     getValues,
-  } = useForm<IAuthFormValues>({
+  } = useForm<IUser>({
     mode: "all",
     reValidateMode: "onChange",
   });
 
-  const trimFormData = (data: IAuthFormValues) => {
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  const trimFormData = (data: IUser) => {
     const trimmedData = {
       ...data,
       username: data.username.trim(),
@@ -46,10 +59,7 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
   const validateForm = () => {
     const values = getValues();
     let hasError = false;
-    const fieldsToValidate: Array<keyof IAuthFormValues> = [
-      "username",
-      "password",
-    ];
+    const fieldsToValidate: Array<keyof IUser> = ["username", "password"];
 
     fieldsToValidate.forEach((field) => {
       const trimmedFieldValue = values[field].trim();
@@ -66,7 +76,7 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
     return !hasError;
   };
 
-  const onSubmitForm = (data: IAuthFormValues) => {
+  const onSubmitForm = (data: IUser) => {
     const trimmedData = trimFormData(data);
     if (validateForm()) {
       onSubmit(trimmedData);
@@ -83,14 +93,14 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
           required: "Required field",
           validate: (value) => {
             const trimmedValue = value.trim();
-            if (trimmedValue.length < 3) {
-              return "Your username needs to be at least 3 characters.";
+            if (trimmedValue.length < MIN_USERNAME_LENGTH) {
+              return `Your username needs to be at least ${MIN_USERNAME_LENGTH} characters.`;
             }
             return true;
           },
           maxLength: {
-            value: 20,
-            message: "Your username should not be more than 20 characters.",
+            value: MAX_USERNAME_LENGTH,
+            message: `Your username should not be more than ${MAX_USERNAME_LENGTH} characters.`,
           },
         })}
         required
@@ -104,20 +114,19 @@ function AuthForm({ formTitle, onSubmit }: IAuthFormProps) {
         )}
       </div>
       <br />
-
       <TextField
         {...register("password", {
           required: "Required field",
           validate: (value) => {
             const trimmedValue = value.trim();
-            if (trimmedValue.length < 6) {
-              return "Your password needs to be at least 6 characters.";
+            if (trimmedValue.length < MIN_PASSWORD_LENGTH) {
+              return `Your password needs to be at least ${MIN_PASSWORD_LENGTH} characters.`;
             }
             return true;
           },
           maxLength: {
-            value: 40,
-            message: "Your password should not be more than 40 characters.",
+            value: MAX_PASSWORD_LENGTH,
+            message: `Your password should not be more than ${MAX_PASSWORD_LENGTH} characters.`,
           },
         })}
         type="password"

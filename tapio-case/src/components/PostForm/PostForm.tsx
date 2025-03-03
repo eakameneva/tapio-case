@@ -4,6 +4,8 @@ import { Button, TextField } from "@mui/material";
 
 const TITLE_MAX_LENGTH = 100;
 const TEXT_MAX_LENGTH = 300;
+const MIN_POST_TEXT_ROWS = 3;
+const MAX_POST_TEXT_ROWS = 10;
 
 interface IPostFormValues {
   title: string;
@@ -93,8 +95,8 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
         id="outlined-required"
         label="Text"
         multiline
-        minRows={3}
-        maxRows={10}
+        minRows={MIN_POST_TEXT_ROWS}
+        maxRows={MAX_POST_TEXT_ROWS}
         fullWidth={true}
         {...register("body", {
           required: "Required field",
