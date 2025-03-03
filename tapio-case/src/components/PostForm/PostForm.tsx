@@ -3,6 +3,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { Button, TextField } from "@mui/material";
 
 const TITLE_MAX_LENGTH = 100;
+const TEXT_MAX_LENGTH = 300;
 
 interface IPostFormValues {
   title: string;
@@ -65,11 +66,12 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)}>
+    <form noValidate onSubmit={handleSubmit(onSubmitForm)}>
       <h2 className="text-2xl font-semibold text-lightTurquoise mb-4 text-center">
         {formTitle}
       </h2>
       <TextField
+        autoFocus
         required
         id="outlined-required"
         label="Title"
@@ -96,6 +98,10 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
         fullWidth={true}
         {...register("body", {
           required: "Required field",
+          maxLength: {
+            value: TEXT_MAX_LENGTH,
+            message: `Text cannot exceed ${TEXT_MAX_LENGTH} characters`,
+          },
         })}
       />
       <div className="text-red-600">

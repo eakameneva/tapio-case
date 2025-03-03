@@ -7,8 +7,8 @@ import { Button, Modal, Popover, Stack, Typography } from "@mui/material";
 import { truncateText } from "../../helpers/index.ts";
 import { MouseEvent, useState } from "react";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store.ts";
 import { deletePost, updatePost } from "../../store/postThunks.ts";
 import PostForm from "../PostForm/PostForm.tsx";
 
@@ -21,18 +21,15 @@ function PostItem({ post, onClick }: IPostItemProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const handleDelete = async (
     id: number,
     event: MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    try {
-      await dispatch(deletePost(id)).unwrap();
-      toast.success("Post deleted successfully");
-    } catch (error) {
-      toast.error(String(error));
-    }
+    await dispatch(deletePost(id)).unwrap();
+    toast.success("Post deleted successfully");
   };
   const handleEdit = (
     isEdit: boolean,
@@ -42,13 +39,9 @@ function PostItem({ post, onClick }: IPostItemProps) {
     setEditMode(isEdit);
   };
   const handleEditSubmit = async (data: Partial<IPost>) => {
-    try {
-      await dispatch(updatePost({ ...post, ...data })).unwrap();
-      toast.success("Post edited successfully");
-      setEditMode(false);
-    } catch (error) {
-      toast.error(String(error));
-    }
+    await dispatch(updatePost({ ...post, ...data })).unwrap();
+    toast.success("Post edited successfully");
+    setEditMode(false);
   };
 
   return (
@@ -63,7 +56,7 @@ function PostItem({ post, onClick }: IPostItemProps) {
         </div>
       </Modal>
       <Card
-        className="!shadow-xl flex flex-col gap-2 w-full !max-h-full min-h-5 cursor-pointer hover:shadow-2xl"
+        className="!shadow-xl flex flex-col gap-2 w-full !max-h-full min-h-52 cursor-pointer hover:shadow-2xl"
         onClick={(event) => {
           if (anchorEl) {
             event.stopPropagation();
@@ -72,80 +65,84 @@ function PostItem({ post, onClick }: IPostItemProps) {
           onClick();
         }}
       >
-        <CardContent className="p-6 flex flex-col flex-grow gap-1 justify-between items-center">
-          <h2 className="text-2xl font-semibold text-lightTurquoise mb-2">
-            {truncateText(post.title, 45)}
-          </h2>
-          <p className="text-darkText text-sm mb-4">
-            {truncateText(post.body, 90)}
-          </p>
-          <Stack direction="row" spacing={2}>
-            <Button
-              onClick={(event) => {
-                event.stopPropagation();
-                setAnchorEl(event.currentTarget);
-              }}
-              variant="outlined"
-              startIcon={<DeleteIcon />}
-              sx={{
-                color: "#2eb7af",
-                borderColor: "#2eb7af",
-                "&:hover": {
-                  backgroundColor: "#2eb7af",
-                  color: "white",
-                },
-              }}
-            >
-              Delete
-            </Button>
-            <Popover
-              open={Boolean(anchorEl)}
-              anchorEl={anchorEl}
-              onClose={() => setAnchorEl(null)}
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              transformOrigin={{ vertical: "top", horizontal: "center" }}
-            >
-              <Stack spacing={1} sx={{ p: 2 }}>
-                <Typography>Are you sure?</Typography>
-                <Stack direction="row" spacing={1} justifyContent="flex-end">
-                  <Button
-                    size="small"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setAnchorEl(null);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={(event) => {
-                      handleDelete(post.id, event);
-                      setAnchorEl(null);
-                    }}
-                  >
-                    Confirm
-                  </Button>
+        <CardContent className="p-6 flex flex-col flex-grow gap-1 justify-between items-stretch">
+          <div>
+            <h2 className="text-2xl font-semibold text-lightTurquoise mb-2">
+              {truncateText(post.title, 45)}
+            </h2>
+            <p className="text-darkText text-sm mb-4">
+              {truncateText(post.body, 90)}
+            </p>
+          </div>
+          {isAuthenticated && (
+            <Stack direction="row" spacing={2}>
+              <Button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setAnchorEl(event.currentTarget);
+                }}
+                variant="outlined"
+                startIcon={<DeleteIcon />}
+                sx={{
+                  color: "#2eb7af",
+                  borderColor: "#2eb7af",
+                  "&:hover": {
+                    backgroundColor: "#2eb7af",
+                    color: "white",
+                  },
+                }}
+              >
+                Delete
+              </Button>
+              <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "center" }}
+              >
+                <Stack spacing={1} sx={{ p: 2 }}>
+                  <Typography>Are you sure?</Typography>
+                  <Stack direction="row" spacing={1} justifyContent="flex-end">
+                    <Button
+                      size="small"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setAnchorEl(null);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size="small"
+                      color="error"
+                      onClick={(event) => {
+                        handleDelete(post.id, event);
+                        setAnchorEl(null);
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </Popover>
-            <Button
-              onClick={(event) => handleEdit(true, event)}
-              variant="outlined"
-              startIcon={<EditIcon />}
-              sx={{
-                color: "#2eb7af",
-                borderColor: "#2eb7af",
-                "&:hover": {
-                  backgroundColor: "#2eb7af",
-                  color: "white",
-                },
-              }}
-            >
-              Edit
-            </Button>
-          </Stack>
+              </Popover>
+              <Button
+                onClick={(event) => handleEdit(true, event)}
+                variant="outlined"
+                startIcon={<EditIcon />}
+                sx={{
+                  color: "#2eb7af",
+                  borderColor: "#2eb7af",
+                  "&:hover": {
+                    backgroundColor: "#2eb7af",
+                    color: "white",
+                  },
+                }}
+              >
+                Edit
+              </Button>
+            </Stack>
+          )}
         </CardContent>
       </Card>
     </>

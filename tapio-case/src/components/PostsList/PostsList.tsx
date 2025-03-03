@@ -1,7 +1,7 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import Pagination from "@mui/material/Pagination";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PostItem from "../PostItem";
 import { Modal, TextField } from "@mui/material";
 import { IPost } from "../../store/postDTO";
@@ -11,7 +11,7 @@ import { fetchAuthors, fetchPosts } from "../../store/postThunks";
 import NewPost from "../NewPost";
 
 const POSTS_PER_PAGE = 6;
-const FIRST_PAGE_POSTS = 5;
+const POST_PER_PAGE_WITH_NEW_POST_ITEM = 5;
 
 function PostsList() {
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
@@ -19,17 +19,38 @@ function PostsList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const dispatch = useDispatch<AppDispatch>();
-  const { posts, loading, error } = useSelector(
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { posts, authors, loading, error } = useSelector(
     (state: RootState) => state.posts
   );
+  const filteredSearchedPosts = useMemo(() => {
+    return posts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.body.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [posts, searchQuery]);
+
+  const firstPagePosts = isAuthenticated
+    ? POST_PER_PAGE_WITH_NEW_POST_ITEM
+    : POSTS_PER_PAGE;
+
   const totalPages =
-    Math.ceil((posts.length - FIRST_PAGE_POSTS) / POSTS_PER_PAGE) + 1;
+    Math.ceil(
+      (filteredSearchedPosts.length - firstPagePosts) / POSTS_PER_PAGE
+    ) + 1;
 
   useEffect(() => {
     if (!posts.length) {
       dispatch(fetchPosts());
     }
   }, [dispatch, posts.length]);
+
+  useEffect(() => {
+    if (!Object.keys(authors).length) {
+      dispatch(fetchAuthors());
+    }
+  }, [dispatch, authors]);
 
   useEffect(() => {
     if (error) {
@@ -44,46 +65,34 @@ function PostsList() {
   useEffect(() => {
     let currentPosts;
 
-    const searchedPosts = posts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.body.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     if (page === 1) {
-      currentPosts = searchedPosts.slice(0, FIRST_PAGE_POSTS);
+      currentPosts = filteredSearchedPosts.slice(0, firstPagePosts);
     } else {
-      const pageOffset = FIRST_PAGE_POSTS + (page - 2) * POSTS_PER_PAGE;
-      currentPosts = searchedPosts.slice(
+      const pageOffset = firstPagePosts + (page - 2) * POSTS_PER_PAGE;
+      currentPosts = filteredSearchedPosts.slice(
         pageOffset,
         pageOffset + POSTS_PER_PAGE
       );
     }
 
     setFilteredPosts(currentPosts);
-  }, [page, posts, searchQuery]);
-
-  useEffect(() => {
-    dispatch(fetchAuthors()).then(() => {
-      dispatch(fetchPosts());
-    });
-  }, [dispatch]);
+  }, [page, filteredSearchedPosts, firstPagePosts]);
 
   return (
-    <div className="max-w-6xl mx-auto flex-col justify-items-center">
+    <div className="max-w-6xl mx-auto flex flex-col justify-items-center items-center">
       {loading ? (
         <CircularProgress className="m-auto" />
       ) : (
         <>
           <TextField
             autoFocus
-            className="w-2xl"
+            className=" max-w-xl w-full"
             placeholder="Type to search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           ></TextField>
-          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
-            {page === 1 && <NewPost />}
+          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5 w-full">
+            {page === 1 && isAuthenticated && <NewPost />}
             {filteredPosts.length < 1 ? (
               <div>No posts found</div>
             ) : (
