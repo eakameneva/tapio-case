@@ -1,6 +1,6 @@
 export interface IUser {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }
 
-export type AuthType = "signUp" | "signIn";
+export type AuthType = 'signUp' | 'signIn'
