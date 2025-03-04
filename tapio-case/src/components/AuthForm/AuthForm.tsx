@@ -144,18 +144,7 @@ function AuthForm({ authType, onSubmit }: IAuthFormProps) {
       {authError && (
         <p className="text-red-500 text-center mt-2">{authError}</p>
       )}
-      <Button
-        onClick={handleSubmit(onSubmitForm)}
-        variant="outlined"
-        sx={{
-          color: "#2eb7af",
-          borderColor: "#2eb7af",
-          "&:hover": {
-            backgroundColor: "#2eb7af",
-            color: "white",
-          },
-        }}
-      >
+      <Button onClick={handleSubmit(onSubmitForm)} variant="outlined">
         {formTitle}
       </Button>
     </form>

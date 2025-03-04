@@ -38,7 +38,7 @@ function NewPost() {
       </Modal>
       <Card
         onClick={() => setCreateMode(true)}
-        className="min-h-52 !bg-transparent !shadow-none border-2 border-dashed border-darkText rounded-2xl gap-2 content-center cursor-pointer !transition-all hover:!bg-gray-200"
+        className="border-2 border-dashed border-darkText content-center !transition-all !bg-transparent !shadow-none hover:!bg-gray-200"
       >
         <CardContent className="flex flex-col items-center text-darkText">
           <AddIcon className="!text-5xl" />

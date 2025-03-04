@@ -114,14 +114,6 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
         onClick={handleSubmit(onSubmitForm)}
         variant="outlined"
         endIcon={<SendIcon />}
-        sx={{
-          color: "#2eb7af",
-          borderColor: "#2eb7af",
-          "&:hover": {
-            backgroundColor: "#2eb7af",
-            color: "white",
-          },
-        }}
       >
         Send
       </Button>

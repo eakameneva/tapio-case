@@ -63,7 +63,7 @@ function PostItem({ post, onClick }: IPostItemProps) {
         </div>
       </Modal>
       <Card
-        className="!shadow-xl flex flex-col gap-2 w-full !max-h-full min-h-52 cursor-pointer hover:shadow-2xl"
+        className="!shadow-xl flex flex-col gap-2 w-full !max-h-full hover:shadow-2xl"
         onClick={(event) => {
           if (anchorEl) {
             event.stopPropagation();
@@ -90,14 +90,6 @@ function PostItem({ post, onClick }: IPostItemProps) {
                 }}
                 variant="outlined"
                 startIcon={<DeleteIcon />}
-                sx={{
-                  color: "#2eb7af",
-                  borderColor: "#2eb7af",
-                  "&:hover": {
-                    backgroundColor: "#2eb7af",
-                    color: "white",
-                  },
-                }}
               >
                 Delete
               </Button>
@@ -137,14 +129,6 @@ function PostItem({ post, onClick }: IPostItemProps) {
                 onClick={(event) => handleEdit(true, event)}
                 variant="outlined"
                 startIcon={<EditIcon />}
-                sx={{
-                  color: "#2eb7af",
-                  borderColor: "#2eb7af",
-                  "&:hover": {
-                    backgroundColor: "#2eb7af",
-                    color: "white",
-                  },
-                }}
               >
                 Edit
               </Button>

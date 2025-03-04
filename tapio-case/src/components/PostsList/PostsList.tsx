@@ -122,18 +122,6 @@ function PostsList() {
               size="large"
               variant="outlined"
               shape="rounded"
-              sx={{
-                "& .MuiPaginationItem-root": {
-                  color: "#18586d",
-                },
-                "& .Mui-selected": {
-                  backgroundColor: "#18586d !important",
-                  color: "white",
-                },
-                "& .MuiPaginationItem-root:hover": {
-                  backgroundColor: "#18586d33",
-                },
-              }}
             />
           </div>
         </>

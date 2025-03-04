@@ -62,16 +62,7 @@ function App() {
       </Modal>
       <header className=" bg-darkBlue flex justify-end items-center shadow-md p-4">
         {isAuthenticated ? (
-          <Button
-            onClick={handleLogOut}
-            variant="outlined"
-            sx={{
-              padding: "12px 24px",
-              backgroundColor: "transparent",
-              borderColor: "white",
-              color: "white",
-            }}
-          >
+          <Button onClick={handleLogOut} variant="contained">
             Log Out
           </Button>
         ) : (
@@ -81,15 +72,6 @@ function App() {
                 handleAuth("signIn");
               }}
               variant="contained"
-              sx={{
-                padding: "12px 24px",
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                "&:hover": {
-                  boxShadow: "none",
-                  opacity: "0.5",
-                },
-              }}
             >
               Sign In
             </Button>
@@ -97,17 +79,7 @@ function App() {
               onClick={() => {
                 handleAuth("signUp");
               }}
-              variant="outlined"
-              sx={{
-                padding: "12px 24px",
-                backgroundColor: "transparent",
-                borderColor: "white",
-                color: "white",
-                marginLeft: "15px",
-                "&:hover": {
-                  opacity: "0.5",
-                },
-              }}
+              variant="contained"
             >
               Sign Up
             </Button>
