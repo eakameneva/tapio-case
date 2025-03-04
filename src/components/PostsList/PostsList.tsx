@@ -55,8 +55,10 @@ function PostsList() {
   }, [dispatch, authors]);
 
   useEffect(() => {
-    setPage(page > totalPages ? totalPages : page);
-  }, [totalPages, page]);
+    if (totalPages > 0) {
+      setPage((prevPage) => (prevPage > totalPages ? totalPages : prevPage));
+    }
+  }, [totalPages]);
 
   useEffect(() => {
     let currentPosts;
@@ -71,7 +73,6 @@ function PostsList() {
         pageOffset + POSTS_PER_PAGE
       );
     }
-
     setFilteredPosts(currentPosts);
   }, [page, filteredSearchedPosts, firstPagePosts]);
 
