@@ -80,6 +80,7 @@ function PostsList() {
         <>
           <TextField
             autoFocus
+            aria-label="Search"
             className=" max-w-xl w-full"
             placeholder="Type to search..."
             value={searchQuery}
@@ -88,7 +89,7 @@ function PostsList() {
           <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5 w-full">
             {page === 1 && isAuthenticated && <NewPost />}
             {filteredPosts.length < 1 ? (
-              <div>No posts found</div>
+              <p>No posts found</p>
             ) : (
               filteredPosts.map((post) => (
                 <PostItem

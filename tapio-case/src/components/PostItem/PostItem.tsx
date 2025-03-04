@@ -32,7 +32,9 @@ function PostItem({ post, onClick }: IPostItemProps) {
   ) => {
     event.stopPropagation();
     await dispatch(deletePost(id)).unwrap();
-    toast.success("Post deleted successfully");
+    toast.success("Post deleted successfully", {
+      role: "alert",
+    });
   };
   const handleEdit = (
     isEdit: boolean,
@@ -43,7 +45,9 @@ function PostItem({ post, onClick }: IPostItemProps) {
   };
   const handleEditSubmit = async (data: Partial<IPost>) => {
     await dispatch(updatePost({ ...post, ...data })).unwrap();
-    toast.success("Post edited successfully");
+    toast.success("Post edited successfully", {
+      role: "alert",
+    });
     setEditMode(false);
   };
 
