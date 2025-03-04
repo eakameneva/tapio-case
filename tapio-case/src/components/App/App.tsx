@@ -38,18 +38,14 @@ function App() {
 
   useEffect(() => {
     if (error) {
-      toast.error(error, {
-        role: "alert",
-      });
+      toast.error(error);
     }
   }, [error]);
 
   useEffect(() => {
     if (isAuthenticated && isAuthenticatedPrevious === false) {
       setAuthMode(false);
-      toast.success("Successfully logged in", {
-        role: "alert",
-      });
+      toast.success("Successfully logged in");
     }
   }, [isAuthenticated, isAuthenticatedPrevious]);
 

@@ -12,6 +12,8 @@ import { getIsStringIncludesNormalized } from "../../helpers";
 
 const POSTS_PER_PAGE = 6;
 const POST_PER_PAGE_WITH_NEW_POST_ITEM = 5;
+const FIRST_PAGE_NUMBER = 1;
+const PAGE_OFFSET_CORRECTION = 2;
 
 function PostsList() {
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
@@ -38,7 +40,7 @@ function PostsList() {
   const totalPages =
     Math.ceil(
       (filteredSearchedPosts.length - firstPagePosts) / POSTS_PER_PAGE
-    ) + 1;
+    ) + FIRST_PAGE_NUMBER;
 
   useEffect(() => {
     if (!posts.length) {
@@ -62,7 +64,8 @@ function PostsList() {
     if (page === 1) {
       currentPosts = filteredSearchedPosts.slice(0, firstPagePosts);
     } else {
-      const pageOffset = firstPagePosts + (page - 2) * POSTS_PER_PAGE;
+      const pageOffset =
+        firstPagePosts + (page - PAGE_OFFSET_CORRECTION) * POSTS_PER_PAGE;
       currentPosts = filteredSearchedPosts.slice(
         pageOffset,
         pageOffset + POSTS_PER_PAGE

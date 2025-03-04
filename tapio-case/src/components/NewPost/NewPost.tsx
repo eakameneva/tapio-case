@@ -23,9 +23,7 @@ function NewPost() {
       newPost.authorName = currentUser;
     }
     await dispatch(addPost(newPost)).unwrap();
-    toast.success("Post created successfully", {
-      role: "alert",
-    });
+    toast.success("Post created successfully");
     setCreateMode(false);
   };
 

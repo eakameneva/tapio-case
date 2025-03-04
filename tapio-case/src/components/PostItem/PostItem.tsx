@@ -5,7 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { IPost } from "../../store/postDTO.ts";
 import { Button, Modal, Popover, Stack, Typography } from "@mui/material";
 import { truncateText } from "../../helpers/index.ts";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store.ts";
@@ -22,7 +22,8 @@ interface IPostItemProps {
 
 function PostItem({ post, onClick }: IPostItemProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const popoverRef = useRef<HTMLButtonElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
@@ -32,9 +33,8 @@ function PostItem({ post, onClick }: IPostItemProps) {
   ) => {
     event.stopPropagation();
     await dispatch(deletePost(id)).unwrap();
-    toast.success("Post deleted successfully", {
-      role: "alert",
-    });
+    toast.success("Post deleted successfully");
+    setPopoverOpen(false);
   };
   const handleEdit = (
     isEdit: boolean,
@@ -45,10 +45,15 @@ function PostItem({ post, onClick }: IPostItemProps) {
   };
   const handleEditSubmit = async (data: Partial<IPost>) => {
     await dispatch(updatePost({ ...post, ...data })).unwrap();
-    toast.success("Post edited successfully", {
-      role: "alert",
-    });
+    toast.success("Post edited successfully");
     setEditMode(false);
+  };
+  const handleClick = (event: MouseEvent) => {
+    if (popoverOpen) {
+      event.stopPropagation();
+    } else {
+      onClick();
+    }
   };
 
   return (
@@ -64,13 +69,7 @@ function PostItem({ post, onClick }: IPostItemProps) {
       </Modal>
       <Card
         className="!shadow-xl flex flex-col gap-2 w-full !max-h-full hover:shadow-2xl"
-        onClick={(event) => {
-          if (anchorEl) {
-            event.stopPropagation();
-            return;
-          }
-          onClick();
-        }}
+        onClick={handleClick}
       >
         <CardContent className="p-6 flex flex-col flex-grow gap-1 justify-between items-stretch">
           <div>
@@ -84,9 +83,10 @@ function PostItem({ post, onClick }: IPostItemProps) {
           {isAuthenticated && (
             <Stack direction="row" spacing={2}>
               <Button
+                ref={popoverRef}
                 onClick={(event) => {
                   event.stopPropagation();
-                  setAnchorEl(event.currentTarget);
+                  setPopoverOpen(true);
                 }}
                 variant="outlined"
                 startIcon={<DeleteIcon />}
@@ -94,31 +94,22 @@ function PostItem({ post, onClick }: IPostItemProps) {
                 Delete
               </Button>
               <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
+                open={popoverOpen}
+                anchorEl={popoverRef.current}
+                onClose={() => setPopoverOpen(false)}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 transformOrigin={{ vertical: "top", horizontal: "center" }}
               >
                 <Stack spacing={1} sx={{ p: 2 }}>
                   <Typography>Are you sure?</Typography>
                   <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <Button
-                      size="small"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setAnchorEl(null);
-                      }}
-                    >
+                    <Button size="small" onClick={() => setPopoverOpen(false)}>
                       Cancel
                     </Button>
                     <Button
                       size="small"
                       color="error"
-                      onClick={(event) => {
-                        handleDelete(post.id, event);
-                        setAnchorEl(null);
-                      }}
+                      onClick={(event) => handleDelete(post.id, event)}
                     >
                       Confirm
                     </Button>
