@@ -4,7 +4,7 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store, persistor } from "./store/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
-import App from "./components/App";
+import App from "./components/App/index.ts";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme.ts";
 
