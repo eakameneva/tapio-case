@@ -89,9 +89,6 @@ function PostsList() {
           <Modal open={!!selectedPost} onClose={() => setSelectedPost(null)}>
             <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-lg w-full'>
               <h2 className='text-2xl text-lightTurquoise font-semibold mb-1'>{selectedPost?.title}</h2>
-              <h3 className='text-darkText font-semibold mb-4'>
-                {selectedPost?.authorName ? `Author: ${selectedPost?.authorName}` : 'Author unknown'}
-              </h3>
               <p className='text-darkText'>{selectedPost?.body}</p>
             </div>
           </Modal>

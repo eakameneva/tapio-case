@@ -26,6 +26,24 @@ function PostItem({ post, onClick }: IPostItemProps) {
   const popoverRef = useRef<HTMLButtonElement | null>(null)
   const dispatch = useDispatch<AppDispatch>()
   const { isAuthenticated } = useSelector((state: RootState) => state.auth)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+
+    const { left, top, width, height } = cardRef.current.getBoundingClientRect()
+    const x = (e.clientX - left) / width - 0.5
+    const y = (e.clientY - top) / height - 0.5
+
+    cardRef.current.style.transform = `rotateX(${y * 20}deg) rotateY(${x * 20}deg)`
+    cardRef.current.style.boxShadow = `${-x * 15}px ${y * 15}px 25px rgba(0, 0, 0, 0.2)`
+  }
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return
+    cardRef.current.style.transform = ''
+    cardRef.current.style.boxShadow = ''
+  }
 
   const handleDelete = async (id: number, event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -57,12 +75,24 @@ function PostItem({ post, onClick }: IPostItemProps) {
           <PostForm formTitle={'Edit post'} onSubmit={handleEditSubmit} initialData={post} />
         </div>
       </Modal>
-      <Card className='!shadow-xl flex flex-col gap-2 w-full !max-h-full hover:shadow-2xl' onClick={handleClick}>
+      <Card
+        className='!shadow-xl flex flex-col gap-2 w-full !max-h-full hover:shadow-2xl'
+        onClick={handleClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        ref={cardRef}
+      >
         <CardContent className='p-6 flex flex-col flex-grow gap-1 justify-between items-stretch'>
+          <div>
+            <img src='../../public/garden.png' alt='garden' className='w-full h-48 object-cover rounded-lg'></img>
+          </div>
           <div>
             <h2 className='text-2xl font-semibold text-lightTurquoise mb-2'>
               {truncateText(post.title, MAX_TITLE_LENGTH)}
             </h2>
+            <h3 className='text-gray-500 text-sm italic mb-4'>
+              {post?.authorName ? `Author: ${post?.authorName}` : 'Author unknown'}
+            </h3>
             <p className='text-darkText text-sm mb-4'>{truncateText(post.body, MAX_TEXT_LENGTH)}</p>
           </div>
           {isAuthenticated && (
