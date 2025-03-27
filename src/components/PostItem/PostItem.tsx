@@ -84,7 +84,7 @@ function PostItem({ post, onClick }: IPostItemProps) {
       >
         <CardContent className='p-6 flex flex-col flex-grow gap-1 justify-between items-stretch'>
           <div>
-            <img src='../../public/garden.png' alt='garden' className='w-full h-48 object-cover rounded-lg'></img>
+            <img src='/garden.png' alt='garden' className='w-full h-48 object-cover rounded-lg'></img>
           </div>
           <div>
             <h2 className='text-2xl font-semibold text-lightTurquoise mb-2'>

@@ -9,6 +9,7 @@ import { AppDispatch, RootState } from '../../store/store'
 import { fetchAuthors, fetchPosts } from '../../store/thunks/postThunks'
 import NewPost from '../NewPost'
 import { getIsStringIncludesNormalized } from '../../helpers'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 const POSTS_PER_PAGE = 6
 const POST_PER_PAGE_WITH_NEW_POST_ITEM = 5
@@ -81,7 +82,10 @@ function PostsList() {
           <div className='max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5 w-full'>
             {page === 1 && isAuthenticated && <NewPost />}
             {filteredPosts.length < 1 ? (
-              <p>No posts found</p>
+              <div className='flex flex-col items-center'>
+                <DotLottieReact src='/no-posts-animation.lottie' loop autoplay />
+                <p>No posts found</p>
+              </div>
             ) : (
               filteredPosts.map((post) => <PostItem key={post.id} post={post} onClick={() => setSelectedPost(post)} />)
             )}
