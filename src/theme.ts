@@ -6,6 +6,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           padding: '8px 16px',
+          whiteSpace: 'nowrap',
           '&.MuiButton-outlined': {
             color: '#93a5cf',
             borderColor: '#93a5cf',

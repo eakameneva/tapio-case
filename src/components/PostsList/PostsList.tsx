@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../store/store'
 import { fetchAuthors, fetchPosts } from '../../store/thunks/postThunks'
 import NewPost from '../NewPost'
-import { getIsStringIncludesNormalized } from '../../helpers'
+import { getIsStringIncludesNormalized, getSortedPosts } from '../../helpers'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
+import SortDropdown from '../SortDropdown'
+import { SortValues } from '../../types'
 
 const POSTS_PER_PAGE = 6
 const PAGE_OFFSET_CORRECTION = 1
@@ -21,17 +23,19 @@ function PostsList() {
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
   const [isCreateMode, setIsCreateMode] = useState(false)
+  const [sortValue, setSortValue] = useState(SortValues.DEFAULT)
   const dispatch = useDispatch<AppDispatch>()
   const { isAuthenticated } = useSelector((state: RootState) => state.auth)
   const { posts, authors, loading } = useSelector((state: RootState) => state.posts)
-  const filteredSearchedPosts = useMemo(() => {
-    return posts.filter(
+  const filteredSearchedAndSortedPosts = useMemo(() => {
+    const searchedPosts = posts.filter(
       (post) =>
         getIsStringIncludesNormalized(post.title, searchQuery) || getIsStringIncludesNormalized(post.body, searchQuery)
     )
-  }, [posts, searchQuery])
+    return getSortedPosts(sortValue, searchedPosts)
+  }, [posts, searchQuery, sortValue])
 
-  const totalPages = Math.ceil(filteredSearchedPosts.length / POSTS_PER_PAGE)
+  const totalPages = Math.ceil(filteredSearchedAndSortedPosts.length / POSTS_PER_PAGE)
 
   useEffect(() => {
     if (!posts.length) {
@@ -53,10 +57,14 @@ function PostsList() {
 
   useEffect(() => {
     const pageOffset = (page - PAGE_OFFSET_CORRECTION) * POSTS_PER_PAGE
-    const currentPosts = filteredSearchedPosts.slice(pageOffset, pageOffset + POSTS_PER_PAGE)
+    const currentPosts = filteredSearchedAndSortedPosts.slice(pageOffset, pageOffset + POSTS_PER_PAGE)
 
     setFilteredPosts(currentPosts)
-  }, [page, filteredSearchedPosts])
+  }, [page, filteredSearchedAndSortedPosts])
+
+  const handleSortChange = (sortValue: SortValues) => {
+    setSortValue(sortValue)
+  }
 
   return (
     <div className='max-w-6xl mx-auto flex flex-col justify-items-center items-center'>
@@ -64,15 +72,18 @@ function PostsList() {
         <CircularProgress className='m-auto' />
       ) : (
         <>
-          <div className='flex justify-between w-full gap-5'>
-            <TextField
-              autoFocus
-              aria-label='Search'
-              className='max-w-xl w-full'
-              placeholder='Type to search...'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          <div className='flex justify-between w-full gap-5 flex-col lg:flex-row'>
+            <div className='flex w-full gap-5'>
+              <TextField
+                autoFocus
+                aria-label='Search'
+                className='max-w-xl w-full'
+                placeholder='Type to search...'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <SortDropdown onChange={handleSortChange} sortValue={sortValue} />
+            </div>
             {isAuthenticated && (
               <Button variant='outlined' startIcon={<AddIcon />} onClick={() => setIsCreateMode(true)}>
                 Add New Post
