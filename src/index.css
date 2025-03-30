@@ -2,7 +2,12 @@
 
 @tailwind utilities;
 @theme {
-  --color-lightTurquoise: oklch(70.77% 0.1126 188.99);
+  --color-lightMauve: #93a5cf;
   --color-darkBlue: oklch(27.83% 0.0544 249.54);
   --color-darkText: oklch(43.08% 0.071 224.4);
+  --font-amaticFont: 'Amatic SC', sans-serif;
+}
+
+.bg-watercolor {
+  background-image: linear-gradient(to top, #93a5cf 0%, #e4efe9 100%);
 }

@@ -64,7 +64,7 @@ function PostsList() {
         <CircularProgress className='m-auto' />
       ) : (
         <>
-          <div className='flex justify-between w-full'>
+          <div className='flex justify-between w-full gap-5'>
             <TextField
               autoFocus
               aria-label='Search'
@@ -85,7 +85,7 @@ function PostsList() {
                 <div />
                 <div className='flex flex-col items-center w-full'>
                   <DotLottieReact src='/no-posts-animation.lottie' loop autoplay />
-                  <p>No posts found</p>
+                  <p className='text-white'>No posts found</p>
                 </div>
               </>
             ) : (
@@ -94,8 +94,11 @@ function PostsList() {
           </div>
           <Modal open={!!selectedPost} onClose={() => setSelectedPost(null)}>
             <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-lg w-full'>
-              <h2 className='text-2xl text-lightTurquoise font-semibold mb-1'>{selectedPost?.title}</h2>
-              <p className='text-darkText'>{selectedPost?.body}</p>
+              <h2 className='text-2xl text-lightMauve font-semibold mb-1'>{selectedPost?.title}</h2>
+              <h3 className='text-gray-500 text-sm italic mb-4'>
+                {selectedPost?.authorName ? `Author: ${selectedPost?.authorName}` : 'Author unknown'}
+              </h3>
+              <p className='text-darkBlue'>{selectedPost?.body}</p>
             </div>
           </Modal>
 

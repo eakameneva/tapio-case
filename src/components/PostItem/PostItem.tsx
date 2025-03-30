@@ -5,13 +5,18 @@ import EditIcon from '@mui/icons-material/Edit'
 import { IPost } from '../../store/postDTO.ts'
 import { Button, Modal, Popover, Stack, Typography } from '@mui/material'
 import { truncateText } from '../../helpers/index.ts'
-import { MouseEvent, useRef, useState } from 'react'
+import { MouseEvent, useMemo, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../store/store.ts'
 import { deletePost, updatePost } from '../../store/thunks/postThunks.ts'
 import PostForm from '../PostForm/PostForm.tsx'
 
+const POST_IMAGES_DATA = [
+  { src: '/garden.png', alt: 'garden' },
+  { src: '/lemon.png', alt: 'lemon' },
+  { src: '/cactus.png', alt: 'cactus' },
+]
 const MAX_TITLE_LENGTH = 45
 const MAX_TEXT_LENGTH = 90
 
@@ -68,6 +73,11 @@ function PostItem({ post, onClick }: IPostItemProps) {
     }
   }
 
+  const imageData = useMemo(() => {
+    const index = Math.floor(Math.random() * POST_IMAGES_DATA.length)
+    return POST_IMAGES_DATA[index]
+  }, [])
+
   return (
     <>
       <Modal open={editMode} onClose={() => setEditMode(false)}>
@@ -84,16 +94,16 @@ function PostItem({ post, onClick }: IPostItemProps) {
       >
         <CardContent className='p-6 flex flex-col flex-grow gap-1 justify-between items-stretch'>
           <div>
-            <img src='/garden.png' alt='garden' className='w-full h-48 object-cover rounded-lg'></img>
+            <img className='w-full h-48 object-cover rounded-lg' {...imageData}></img>
           </div>
           <div>
-            <h2 className='text-2xl font-semibold text-lightTurquoise mb-2'>
+            <h2 className='text-2xl font-semibold text-lightMauve mb-2'>
               {truncateText(post.title, MAX_TITLE_LENGTH)}
             </h2>
             <h3 className='text-gray-500 text-sm italic mb-4'>
               {post?.authorName ? `Author: ${post?.authorName}` : 'Author unknown'}
             </h3>
-            <p className='text-darkText text-sm mb-4'>{truncateText(post.body, MAX_TEXT_LENGTH)}</p>
+            <p className='text-darkBlue text-sm mb-4'>{truncateText(post.body, MAX_TEXT_LENGTH)}</p>
           </div>
           {isAuthenticated && (
             <Stack direction='row' spacing={2}>

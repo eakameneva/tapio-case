@@ -69,7 +69,7 @@ function PostForm({ formTitle, onSubmit, initialData }: IPostFormProps) {
 
   return (
     <form noValidate onSubmit={handleSubmit(onSubmitForm)}>
-      <h2 className='text-2xl font-semibold text-lightTurquoise mb-4 text-center'>{formTitle}</h2>
+      <h2 className='text-2xl font-semibold text-lightMauve mb-4 text-center'>{formTitle}</h2>
       <TextField
         autoFocus
         required

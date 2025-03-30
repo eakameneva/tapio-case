@@ -56,34 +56,36 @@ function App() {
           <AuthForm authType={formType} onSubmit={handleAuthSubmit} />
         </div>
       </Modal>
-      <header className=' bg-darkBlue flex justify-end items-center shadow-md p-4'>
-        {isAuthenticated ? (
-          <Button onClick={handleLogOut} variant='contained'>
-            Log Out
-          </Button>
-        ) : (
-          <>
-            <Button
-              onClick={() => {
-                handleAuth('signIn')
-              }}
-              variant='contained'
-            >
-              Sign In
+      <div className='min-h-screen px-6 py-8 bg-watercolor'>
+        <header className='flex justify-between items-center w-full mb-8'>
+          <h1 className='text-4xl font-extrabold font-amaticFont text-lightMauve mb-4 tracking-wide self-start'>
+            MyBlog
+          </h1>
+          {isAuthenticated ? (
+            <Button onClick={handleLogOut} variant='contained'>
+              Log Out
             </Button>
-            <Button
-              onClick={() => {
-                handleAuth('signUp')
-              }}
-              variant='contained'
-            >
-              Sign Up
-            </Button>
-          </>
-        )}
-      </header>
-      <div className='min-h-screen px-6 py-8 bg-gray-100'>
-        <h1 className='text-4xl font-extrabold text-darkText text-center mb-4 tracking-wide '>Recent Posts</h1>
+          ) : (
+            <div>
+              <Button
+                onClick={() => {
+                  handleAuth('signIn')
+                }}
+                variant='contained'
+              >
+                Sign In
+              </Button>
+              <Button
+                onClick={() => {
+                  handleAuth('signUp')
+                }}
+                variant='contained'
+              >
+                Sign Up
+              </Button>
+            </div>
+          )}
+        </header>
         <PostsList />
         <ToastContainer
           position='top-center'
