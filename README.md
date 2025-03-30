@@ -23,6 +23,8 @@ The app allows users to view, create, update, and delete posts with pagination s
 - Error handling with user-friendly feedback
 - Responsive design using MUI and Tailwind CSS
 - Toast notifications with react-toastify
+- Sorting posts by: Title, Author's name(alphabetical order), Default (post creation date)
+- Provided pictures are randomly distributed and are only an example of how it could look (API does not provide pictures for posts)
 
 ## Technologies Used
 
@@ -56,5 +58,3 @@ Follow these steps to set up and run the project locally:
    ```
 
    The app will be available at **[http://localhost:5173](http://localhost:5173)**.
-
-
